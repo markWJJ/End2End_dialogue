@@ -25,7 +25,7 @@ class InformAgent(Agent):
         
         self.state['turn'] += 2
         if self.current_slot_id < len(self.slot_set.keys()):
-            slot = self.slot_set.keys()[self.current_slot_id]
+            slot = list(self.slot_set.keys())[self.current_slot_id]
             self.current_slot_id += 1
 
             act_slot_response = {}

@@ -6,7 +6,7 @@ Created on May 17, 2016
 
 import json
 from . import StateTracker
-from deep_dialog import dialog_config
+from src.deep_dialog import dialog_config
 
 
 class DialogManager:

@@ -26,19 +26,20 @@
 #
 # @author: xiul, t-zalipt
 # '''
-
+import os
+print(os.getcwd())
 import argparse, json, copy, os
 import pickle as pickle
 
-from deep_dialog.dialog_system import DialogManager, text_to_dict
-from deep_dialog.agents import AgentCmd, InformAgent, RequestAllAgent, RandomAgent, EchoAgent, RequestBasicsAgent, AgentDQN
-from deep_dialog.usersims import RuleSimulator
+from src.deep_dialog.dialog_system import DialogManager, text_to_dict
+from src.deep_dialog.agents import AgentCmd, InformAgent, RequestAllAgent, RandomAgent, EchoAgent, RequestBasicsAgent, AgentDQN
+from src.deep_dialog.usersims import RuleSimulator
 
-from deep_dialog import dialog_config
-from deep_dialog.dialog_config import *
+from src.deep_dialog import dialog_config
+from src.deep_dialog.dialog_config import *
 
-from deep_dialog.nlu import nlu
-from deep_dialog.nlg import nlg
+from src.deep_dialog.nlu import nlu
+from src.deep_dialog.nlg import nlg
 
 
 """ 
@@ -131,8 +132,10 @@ movie_kb_path = params['movie_kb_path']
 movie_kb = pickle.load(open(movie_kb_path, 'rb'),encoding='utf-8')
 
 # movie kb 内容
-# for k,v in movie_kb.items():
-#     print(k,v)
+print('#'*100)
+for k,v in movie_kb.items():
+    print(k,v)
+print('#'*100)
 
 
 
@@ -221,8 +224,8 @@ else:
 nlg_model_path = params['nlg_model_path']
 diaact_nl_pairs = params['diaact_nl_pairs']
 nlg_model = nlg()
-nlg_model.load_nlg_model(nlg_model_path)
-nlg_model.load_predefine_act_nl_pairs(diaact_nl_pairs)
+nlg_model.load_nlg_model(nlg_model_path) #加载nlg模型
+nlg_model.load_predefine_act_nl_pairs(diaact_nl_pairs) #加载预定义的 用户-系统对话
 
 agent.set_nlg_model(nlg_model)
 user_sim.set_nlg_model(nlg_model)
@@ -250,12 +253,12 @@ dialog_manager = DialogManager(agent, user_sim, act_set, slot_set, movie_kb)
 ################################################################################
 status = {'successes': 0, 'count': 0, 'cumulative_reward': 0}
 
-simulation_epoch_size = params['simulation_epoch_size']
+simulation_epoch_size = params['simulation_epoch_size'] #验证集大小 默认50
 batch_size = params['batch_size'] # default = 16
-warm_start = params['warm_start']
+warm_start = params['warm_start'] #半热启动?
 warm_start_epochs = params['warm_start_epochs']
 
-success_rate_threshold = params['success_rate_threshold']
+success_rate_threshold = params['success_rate_threshold'] #成功阈值
 save_check_point = params['save_check_point']
 
 

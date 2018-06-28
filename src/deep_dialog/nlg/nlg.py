@@ -11,8 +11,8 @@ import pickle as pickle
 import copy, argparse, json
 import numpy as np
 
-from deep_dialog import dialog_config
-from deep_dialog.nlg.lstm_decoder_tanh import lstm_decoder_tanh
+from src.deep_dialog import dialog_config
+from src.deep_dialog.nlg.lstm_decoder_tanh import lstm_decoder_tanh
 
 
 class nlg:
@@ -56,7 +56,7 @@ class nlg:
         # remove I do not care slot in task(complete)
         if dia_act['diaact'] == 'inform' and 'taskcomplete' in dia_act['inform_slots'].keys() and dia_act['inform_slots']['taskcomplete'] != dialog_config.NO_VALUE_MATCH:
             inform_slot_set = dia_act['inform_slots'].keys()
-            for slot in inform_slot_set:
+            for slot in list(inform_slot_set):
                 if dia_act['inform_slots'][slot] == dialog_config.I_DO_NOT_CARE: del dia_act['inform_slots'][slot]
         
         if dia_act['diaact'] in self.diaact_nl_pairs['dia_acts'].keys():
@@ -135,7 +135,7 @@ class nlg:
     def load_nlg_model(self, model_path):
         """ load the trained NLG model """  
         
-        model_params = pickle.load(open(model_path, 'rb'),encoding='utf-8')
+        model_params = pickle.load(open(model_path, 'rb'),encoding='latin1')
     
         hidden_size = model_params['model']['Wd'].shape[0]
         output_size = model_params['model']['Wd'].shape[1]
@@ -169,10 +169,10 @@ class nlg:
                 break
             elif slot_val == dialog_config.I_DO_NOT_CARE:
                 counter += 1
-                sentence = sentence.replace('$'+slot+'$', '', 1)
+                sentence = str(sentence).replace('$'+slot+'$', '', 1)
                 continue
-            
-            sentence = sentence.replace('$'+slot+'$', slot_val, 1)
+
+            sentence = str(sentence).replace(str('$'+slot+'$'), slot_val, 1)
         
         if counter > 0 and counter == len(dia_act['inform_slots']):
             sentence = dialog_config.I_DO_NOT_CARE
