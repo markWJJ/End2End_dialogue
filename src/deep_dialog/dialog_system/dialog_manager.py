@@ -30,12 +30,11 @@ class DialogManager:
         self.state_tracker.initialize_episode()
         self.user_action = self.user.initialize_episode()
         self.state_tracker.update(user_action = self.user_action)
-        
+
         if dialog_config.run_mode < 3:
             print ("New episode, user goal:")
             print (json.dumps(self.user.goal, indent=2))
         self.print_function(user_action = self.user_action)
-            
         self.agent.initialize_episode()
 
     def next_turn(self, record_training_data=True):
@@ -45,8 +44,10 @@ class DialogManager:
         #   CALL AGENT TO TAKE HER TURN
         ########################################################################
         self.state = self.state_tracker.get_state_for_agent()
+        # print('state',self.state)
         self.agent_action = self.agent.state_to_action(self.state)
-        
+        # print('\n')
+        # print('agent_action',self.agent_action)
         ########################################################################
         #   Register AGENT action with the state_tracker
         ########################################################################
@@ -126,6 +127,7 @@ class DialogManager:
             
             if self.agent.__class__.__name__ == 'AgentCmd': # command line agent
                 user_request_slots = user_action['request_slots']
+                print(user_request_slots)
                 if 'ticket'in user_request_slots.keys(): del user_request_slots['ticket']
                 if len(user_request_slots) > 0:
                     possible_values = self.state_tracker.get_suggest_slots_values(user_action['request_slots'])

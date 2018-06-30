@@ -5,8 +5,8 @@ Created on May 25, 2016
 """
 
 import copy, random
-from deep_dialog import dialog_config
-from deep_dialog.agents.agent import Agent
+from src.deep_dialog import dialog_config
+from src.deep_dialog.agents.agent import Agent
 
 
 class InformAgent(Agent):
@@ -52,7 +52,7 @@ class RequestAllAgent(Agent):
 
     def state_to_action(self, state):
         """ Run current policy on state and produce an action """
-        
+
         self.state['turn'] += 2
         if self.current_slot_id < len(dialog_config.sys_request_slots):
             slot = dialog_config.sys_request_slots[self.current_slot_id]

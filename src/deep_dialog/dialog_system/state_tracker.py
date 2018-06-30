@@ -80,6 +80,10 @@ class StateTracker:
     def get_state_for_agent(self):
         """ Get the state representatons to send to agent """
         #state = {'user_action': self.history_dictionaries[-1], 'current_slots': self.current_slots, 'kb_results': self.kb_results_for_state()}
+        # history_dictionaries 对话的日志 user和agent
+        # print('history_dictionaries',self.history_dictionaries)
+        # print('kb_results_for_state',self.kb_results_for_state())
+        # print('kb_results_dict',self.kb_helper.database_results_for_agent(self.current_slots))
         state = {'user_action': self.history_dictionaries[-1],
                  'current_slots': self.current_slots, #'kb_results': self.kb_results_for_state(),
                  'kb_results_dict':self.kb_helper.database_results_for_agent(self.current_slots),
@@ -92,9 +96,10 @@ class StateTracker:
         """ Get the suggested values for request slots """
         
         suggest_slot_vals = {}
-        if len(request_slots) > 0: 
+        if len(request_slots) > 0:
+
             suggest_slot_vals = self.kb_helper.suggest_slot_values(request_slots, self.current_slots)
-        
+
         return suggest_slot_vals
     
     def get_current_kb_results(self):

@@ -61,12 +61,12 @@ if __name__ == "__main__":
     parser.add_argument('--diaact_nl_pairs', dest='diaact_nl_pairs', type=str, default='./deep_dialog/data/dia_act_nl_pairs.v6.json', help='path to the pre-defined dia_act&NL pairs')
 
     parser.add_argument('--max_turn', dest='max_turn', default=20, type=int, help='maximum length of each dialog (default=20, 0=no maximum length)')
-    parser.add_argument('--episodes', dest='episodes', default=1, type=int, help='Total number of episodes to run (default=1)')
+    parser.add_argument('--episodes', dest='episodes', default=10, type=int, help='Total number of episodes to run (default=1)')
     parser.add_argument('--slot_err_prob', dest='slot_err_prob', default=0.05, type=float, help='the slot err probability')
     parser.add_argument('--slot_err_mode', dest='slot_err_mode', default=0, type=int, help='slot_err_mode: 0 for slot_val only; 1 for three errs')
     parser.add_argument('--intent_err_prob', dest='intent_err_prob', default=0.05, type=float, help='the intent err probability')
     
-    parser.add_argument('--agt', dest='agt', default=0, type=int, help='Select an agent: 0 for a command line input, 1-6 for rule based agents')
+    parser.add_argument('--agt', dest='agt', default=9, type=int, help='Select an agent: 0 for a command line input, 1-6 for rule based agents')
     parser.add_argument('--usr', dest='usr', default=1, type=int, help='Select a user simulator. 0 is a Frozen user simulator.')
     
     parser.add_argument('--epsilon', dest='epsilon', type=float, default=0, help='Epsilon to determine stochasticity of epsilon-greedy agent policies')
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument('--nlu_model_path', dest='nlu_model_path', type=str, default='./deep_dialog/models/nlu/lstm_[1468447442.91]_39_80_0.921.p', help='path to the NLU model file')
     
     parser.add_argument('--act_level', dest='act_level', type=int, default=0, help='0 for dia_act level; 1 for NL level')
-    parser.add_argument('--run_mode', dest='run_mode', type=int, default=0, help='run_mode: 0 for default NL; 1 for dia_act; 2 for both')
+    parser.add_argument('--run_mode', dest='run_mode', type=int, default=2, help='run_mode: 0 for default NL; 1 for dia_act; 2 for both')
     parser.add_argument('--auto_suggest', dest='auto_suggest', type=int, default=0, help='0 for no auto_suggest; 1 for auto_suggest')
     parser.add_argument('--cmd_input_mode', dest='cmd_input_mode', type=int, default=0, help='run_mode: 0 for NL; 1 for dia_act')
     
@@ -132,24 +132,24 @@ movie_kb_path = params['movie_kb_path']
 movie_kb = pickle.load(open(movie_kb_path, 'rb'),encoding='utf-8')
 
 # movie kb 内容
-print('#'*100)
-for k,v in movie_kb.items():
-    print(k,v)
-print('#'*100)
+# print('#'*100)
+# for k,v in movie_kb.items():
+#     print(k,v)
+# print('#'*100)
 
 
 
 act_set = text_to_dict(params['act_set']) #行为 类型
 slot_set = text_to_dict(params['slot_set']) #槽位 类型
-print(act_set)
-print(slot_set)
+# print(act_set)
+# print(slot_set)
 
 ################################################################################
 # a movie dictionary for user simulator - slot:possible values
 ################################################################################
 movie_dictionary = pickle.load(open(dict_path, 'rb')) #槽位 实体字典
-for k,v in movie_dictionary.items():
-    print(k,v)
+# for k,v in movie_dictionary.items():
+#     print(k,v)
 
 dialog_config.run_mode = params['run_mode']
 dialog_config.auto_suggest = params['auto_suggest']
@@ -255,7 +255,7 @@ status = {'successes': 0, 'count': 0, 'cumulative_reward': 0}
 
 simulation_epoch_size = params['simulation_epoch_size'] #验证集大小 默认50
 batch_size = params['batch_size'] # default = 16
-warm_start = params['warm_start'] #半热启动?
+warm_start = params['warm_start'] #热启动
 warm_start_epochs = params['warm_start_epochs']
 
 success_rate_threshold = params['success_rate_threshold'] #成功阈值
@@ -364,7 +364,7 @@ def run_episodes(count, status):
     successes = 0
     cumulative_reward = 0
     cumulative_turns = 0
-    
+
     if agt == 9 and params['trained_model_path'] == None and warm_start == 1:
         print ('warm_start starting ...')
         warm_start_simulation()
@@ -377,6 +377,7 @@ def run_episodes(count, status):
         
         while(not episode_over):
             episode_over, reward = dialog_manager.next_turn()
+            print('episode:%s reward:%s'%(episode_over,reward))
             cumulative_reward += reward
                 
             if episode_over:

@@ -175,6 +175,7 @@ class KBHelper:
         """ Return the suggest slot values """
         
         avail_kb_results = self.available_results_from_kb(current_slots)
+
         return_suggest_slot_vals = {}
         for slot in request_slots.keys():
             avail_values_dict = self.available_slot_values(slot, avail_kb_results)
